@@ -1,0 +1,36 @@
+classDiagram
+    class LoanAgreementDirector {
+        +personalLoan(borrower, principal, months) LoanAgreement
+        +carLoan(...) LoanAgreement
+        +mortgage(...) LoanAgreement
+    }
+    class LoanAgreementBuilder {
+        -borrower Customer
+        -principal Money
+        -termMonths int
+        -annualRatePercent BigDecimal
+        -collateral String
+        -coSigner Customer
+        -insured boolean
+        +principal(Money) LoanAgreementBuilder
+        +termMonths(int) LoanAgreementBuilder
+        +annualRatePercent(String) LoanAgreementBuilder
+        +collateral(String) LoanAgreementBuilder
+        +coSigner(Customer) LoanAgreementBuilder
+        +insured(boolean) LoanAgreementBuilder
+        +build() LoanAgreement
+        -validate()
+    }
+    class LoanAgreement {
+        <<immutable product>>
+        -borrower Customer
+        -principal Money
+        -termMonths int
+        -totalInterest Money
+        +builder(Customer) LoanAgreementBuilder
+        +getMonthlyPayment() Money
+        +getTotalInterest() Money
+        +summary() String
+    }
+    LoanAgreementDirector ..> LoanAgreementBuilder : drives
+    LoanAgreementBuilder ..> LoanAgreement : builds
