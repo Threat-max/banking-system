@@ -1,0 +1,115 @@
+
+=== 1. Opening accounts (Factory Method) ===
+SAV-1001 | Alice | Savings account | balance $12,000.00 | monthly fee $0.00
+CHK-1001 | Alice | Checking account | balance $2,000.00 | monthly fee $5.00
+PRM-1001 | Bob | Premium savings account | balance $20,000.00 | monthly fee $0.00
+CHK-1002 | Bob | Checking account | balance $800.00 | monthly fee $5.00
+
+=== 2. Adding features at runtime (Decorator) ===
+CHK-1001 | Alice | Checking account + overdraft protection (limit $500.00) + SMS alerts | balance $2,000.00 | monthly fee $9.50
+SAV-1001 | Alice | Savings account + per-transaction limit $3,000.00 | balance $12,000.00 | monthly fee $0.00
+
+=== 3. Money movement through the facade (Facade) ===
+[SMS to Alice] CHK-1001 -$2,300.00, balance -$300.00
+Alice checking after overdraft: -$300.00
+[SMS to Alice] CHK-1001 +$500.00, balance $200.00
+Alice checking after deposit:   $200.00
+REJECTED (withdraw 900 beyond the overdraft limit): Overdraft limit $500.00 exceeded in CHK-1001: balance $200.00, requested $900.00
+REJECTED (withdraw 4000 above the per-transaction limit): Withdrawal $4,000.00 exceeds the per-transaction limit $3,000.00 of SAV-1001
+[SMS to Alice] CHK-1001 +$2,500.00, balance $2,700.00
+After transfer: savings $9,500.00, checking $2,700.00
+
+=== 4. Fraud detection (Observer) ===
+FRAUD ALERT: Large transaction (threshold $5,000.00) on PRM-1001 (TX-0009, WITHDRAWAL $6,000.00)
+[SMS to Alice] CHK-1001 -$100.00, balance $2,600.00
+[SMS to Alice] CHK-1001 -$100.00, balance $2,500.00
+[SMS to Alice] CHK-1001 -$100.00, balance $2,400.00
+FRAUD ALERT: 3 outgoing transactions within 10 minutes on CHK-1001 (TX-0012, WITHDRAWAL $100.00)
+
+=== 5. Interest strategies swapped at runtime (Strategy) ===
+PRM-1001 | Premium tiered: 3% up to $10,000.00, 5% above    | 12-month interest on $14,000.00: $500.00
+PRM-1001 | Compound savings 4% (monthly compounding)        | 12-month interest on $14,000.00: $570.38
+PRM-1001 | Premium tiered: 3% up to $10,000.00, 5% above    | 12-month interest on $14,000.00: $500.00
+CHK-1001 | No interest                                      | 12-month interest on $2,400.00: $0.00
+
+=== 6. Loans (Builder, Director, Facade) ===
+[SMS to Alice] CHK-1001 +$10,000.00, balance $12,400.00
+APPROVED: Personal loan for Alice: $10,000.00 over 24 months at 12%, monthly payment $470.73, total interest $1,297.63, collateral: none, co-signer: none, insured: no
+REJECTED (Bob builds a loan without security): Credit score below 600 requires a co-signer or collateral
+APPROVED: Renovation loan for Bob: $15,000.00 over 36 months at 11.5%, monthly payment $494.64, total interest $2,807.04, collateral: none, co-signer: Alice, insured: no
+REJECTED (Bob applies for a 200,000 mortgage): Loan rejected: monthly payment $1,491.15 is above 40% of income ($1,000.00)
+
+=== 7. Observers: audit log and dashboard ===
+TX-0001 | 2026-11-11 09:00 | SAV-1001  | DEPOSIT           | $12,000.00
+TX-0002 | 2026-11-11 09:00 | CHK-1001  | DEPOSIT           | $2,000.00
+TX-0003 | 2026-11-11 09:00 | PRM-1001  | DEPOSIT           | $20,000.00
+TX-0004 | 2026-11-11 09:00 | CHK-1002  | DEPOSIT           | $800.00
+TX-0005 | 2026-11-11 09:00 | CHK-1001  | WITHDRAWAL        | $2,300.00
+TX-0006 | 2026-11-11 09:00 | CHK-1001  | DEPOSIT           | $500.00
+TX-0007 | 2026-11-11 09:00 | SAV-1001  | TRANSFER_OUT      | $2,500.00
+TX-0008 | 2026-11-11 09:00 | CHK-1001  | TRANSFER_IN       | $2,500.00
+TX-0009 | 2026-11-11 09:30 | PRM-1001  | WITHDRAWAL        | $6,000.00
+TX-0010 | 2026-11-11 09:32 | CHK-1001  | WITHDRAWAL        | $100.00
+TX-0011 | 2026-11-11 09:34 | CHK-1001  | WITHDRAWAL        | $100.00
+TX-0012 | 2026-11-11 09:36 | CHK-1001  | WITHDRAWAL        | $100.00
+TX-0013 | 2026-11-11 09:36 | CHK-1001  | LOAN_DISBURSEMENT | $10,000.00
+TX-0014 | 2026-11-11 09:36 | CHK-1002  | LOAN_DISBURSEMENT | $15,000.00
+
+DEPOSIT           count=5 volume=$35,300.00
+WITHDRAWAL        count=5 volume=$8,600.00
+TRANSFER_IN       count=1 volume=$2,500.00
+TRANSFER_OUT      count=1 volume=$2,500.00
+LOAN_DISBURSEMENT count=2 volume=$25,000.00
+
+Fraud alerts raised: 2
+
+=== 8. Final accounts ===
+SAV-1001 | Alice | Savings account + per-transaction limit $3,000.00 | balance $9,500.00 | monthly fee $0.00
+CHK-1001 | Alice | Checking account + overdraft protection (limit $500.00) + SMS alerts | balance $12,400.00 | monthly fee $9.50
+PRM-1001 | Bob | Premium savings account | balance $14,000.00 | monthly fee $0.00
+CHK-1002 | Bob | Checking account | balance $15,800.00 | monthly fee $5.00
+
+=== 9. Self-checks of all six patterns ===
+PASS  savings product type
+PASS  premium savings product type
+PASS  checking product type
+PASS  initial deposit applied
+PASS  first id
+PASS  second id
+PASS  compound 4% on 14,000 for 12 months
+PASS  tiered on 14,000 for 12 months
+PASS  loan interest 10,000 at 12% for 24 months
+PASS  no interest
+PASS  negative balance earns nothing
+PASS  same account, different result after swap
+PASS  tiered result after swap
+PASS  monthly payment 470.73
+PASS  optional parts default to empty
+PASS  low score without security is rejected by builder
+PASS  large loan without collateral is rejected by builder
+PASS  missing rate is rejected by builder
+PASS  co-signer satisfies the security rule
+PASS  overdraft balance is negative
+PASS  wrapped account is empty, not negative
+PASS  deposit repays overdraft first
+PASS  limit enforced
+PASS  fee is summed over decorators
+PASS  audit log has one line per transaction
+PASS  statistics count deposits
+PASS  late subscriber is notified without changing existing code
+PASS  below threshold: no alert
+PASS  large transaction raises alert
+PASS  rapid succession raises alert
+PASS  slow withdrawals raise no alert
+PASS  deposits are never suspicious
+PASS  transfer moves money
+PASS  transfer is audited twice
+PASS  unknown account fails
+PASS  loan disbursed to account
+PASS  loan stored
+PASS  mortgage rejected by affordability rule
+PASS  rejected loan pays out nothing
+PASS  disbursement counted in statistics
+PASS  outgoing types are flagged
+
+Passed: 41, failed: 0
