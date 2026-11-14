@@ -1,0 +1,40 @@
+classDiagram
+    class TransactionMonitor {
+        <<Subject>>
+        -observers List
+        +subscribe(TransactionObserver)
+        +unsubscribe(TransactionObserver)
+        +publish(Transaction)
+    }
+    class TransactionObserver {
+        <<interface, Observer>>
+        +onTransaction(Transaction)
+    }
+    class FraudDetectionObserver {
+        -alertHandler Consumer
+        -recentOutgoingByAccount Map
+        +onTransaction(Transaction)
+    }
+    class AuditLogObserver {
+        -entries List
+        +onTransaction(Transaction)
+    }
+    class TransactionStatisticsObserver {
+        -counts Map
+        -volumes Map
+        +onTransaction(Transaction)
+    }
+    class Transaction {
+        <<record event>>
+        id
+        accountId
+        type
+        amount
+        timestamp
+    }
+    TransactionMonitor o-- TransactionObserver
+    TransactionObserver <|.. FraudDetectionObserver
+    TransactionObserver <|.. AuditLogObserver
+    TransactionObserver <|.. TransactionStatisticsObserver
+    TransactionMonitor ..> Transaction : publishes
+    FraudDetectionObserver ..> FraudAlert : raises
