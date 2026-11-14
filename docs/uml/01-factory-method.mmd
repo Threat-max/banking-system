@@ -1,0 +1,34 @@
+classDiagram
+    class AccountFactory {
+        <<abstract>>
+        -sequence int
+        +openAccount(owner, initialDeposit) Account
+        #createAccount(id, owner) Account*
+        #idPrefix() String*
+    }
+    class SavingsAccountFactory {
+        #createAccount(id, owner) Account
+        #idPrefix() String
+    }
+    class PremiumSavingsAccountFactory {
+        #createAccount(id, owner) Account
+        #idPrefix() String
+    }
+    class CheckingAccountFactory {
+        #createAccount(id, owner) Account
+        #idPrefix() String
+    }
+    class Account {
+        <<interface>>
+    }
+    class SavingsAccount
+    class CheckingAccount
+    AccountFactory <|-- SavingsAccountFactory
+    AccountFactory <|-- PremiumSavingsAccountFactory
+    AccountFactory <|-- CheckingAccountFactory
+    Account <|.. SavingsAccount
+    Account <|.. CheckingAccount
+    SavingsAccountFactory ..> SavingsAccount : creates
+    PremiumSavingsAccountFactory ..> SavingsAccount : creates
+    CheckingAccountFactory ..> CheckingAccount : creates
+    AccountFactory ..> Account : returns
