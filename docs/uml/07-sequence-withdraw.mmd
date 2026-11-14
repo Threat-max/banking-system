@@ -1,0 +1,21 @@
+sequenceDiagram
+    actor Client as Main (client)
+    participant F as BankingFacade
+    participant R as AccountRegistry
+    participant S as SmsAlertsDecorator
+    participant O as OverdraftProtectionDecorator
+    participant A as CheckingAccount
+    participant M as TransactionMonitor
+    participant Fr as FraudDetectionObserver
+    participant L as AuditLogObserver
+    Client->>F: withdraw("CHK-1001", $2,300)
+    F->>R: find("CHK-1001")
+    R-->>F: Sms(Overdraft(Checking))
+    F->>S: withdraw($2,300)
+    S->>O: withdraw($2,300)
+    O->>A: withdraw(available $2,000)
+    O-->>S: overdrawn = $300
+    S-->>F: done (SMS sent: -$2,300, balance -$300)
+    F->>M: publish(Transaction TX-0005)
+    M->>Fr: onTransaction(tx)
+    M->>L: onTransaction(tx)

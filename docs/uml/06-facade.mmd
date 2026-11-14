@@ -1,0 +1,39 @@
+classDiagram
+    class Client {
+        Main
+    }
+    class BankingFacade {
+        <<Facade>>
+        +openSavingsAccount()
+        +openCheckingAccount()
+        +openPremiumSavingsAccount()
+        +enableOverdraftProtection()
+        +enableSmsAlerts()
+        +setPerTransactionLimit()
+        +deposit()
+        +withdraw()
+        +transfer()
+        +projectInterest()
+        +applyForPersonalLoan()
+        +applyForMortgage()
+        +submitLoan()
+    }
+    class AccountRegistry
+    class AccountFactory
+    class AccountDecorator
+    class LoanAgreementDirector
+    class LoanService
+    class TransactionMonitor
+    class FraudDetectionObserver
+    class AuditLogObserver
+    class TransactionStatisticsObserver
+    Client --> BankingFacade
+    BankingFacade --> AccountRegistry
+    BankingFacade --> AccountFactory
+    BankingFacade --> AccountDecorator
+    BankingFacade --> LoanAgreementDirector
+    BankingFacade --> LoanService
+    BankingFacade --> TransactionMonitor
+    TransactionMonitor o-- FraudDetectionObserver
+    TransactionMonitor o-- AuditLogObserver
+    TransactionMonitor o-- TransactionStatisticsObserver
