@@ -1,0 +1,47 @@
+classDiagram
+    direction LR
+    class Main
+    class BankingFacade {
+        +openSavingsAccount()
+        +openCheckingAccount()
+        +enableOverdraftProtection()
+        +deposit() withdraw() transfer()
+        +projectInterest()
+        +applyForPersonalLoan()
+        +submitLoan()
+    }
+    class AccountRegistry
+    class AccountFactory {
+        <<abstract>>
+    }
+    class Account {
+        <<interface>>
+    }
+    class AccountDecorator {
+        <<abstract>>
+    }
+    class InterestStrategy {
+        <<interface>>
+    }
+    class LoanAgreement
+    class LoanAgreementDirector
+    class LoanService
+    class TransactionMonitor
+    class TransactionObserver {
+        <<interface>>
+    }
+    Main --> BankingFacade : only dependency
+    BankingFacade --> AccountRegistry
+    BankingFacade --> AccountFactory : Factory Method
+    BankingFacade --> AccountDecorator : Decorator
+    BankingFacade --> LoanAgreementDirector : Builder
+    BankingFacade --> LoanService
+    BankingFacade --> TransactionMonitor : Observer
+    AccountFactory ..> Account : creates
+    AccountDecorator ..|> Account
+    AccountDecorator o-- Account : wraps
+    Account --> InterestStrategy : Strategy
+    LoanAgreement ..> InterestStrategy : Strategy
+    LoanAgreementDirector ..> LoanAgreement : builds
+    LoanService ..> LoanAgreement
+    TransactionMonitor o-- TransactionObserver
