@@ -1,0 +1,27 @@
+classDiagram
+    class Account {
+        <<interface>>
+        +setInterestStrategy(InterestStrategy)
+        +calculateInterest(months) Money
+    }
+    class BankAccount {
+        <<abstract, Context>>
+        -balance Money
+        -interestStrategy InterestStrategy
+        +calculateInterest(months) Money
+    }
+    class InterestStrategy {
+        <<interface>>
+        +calculateInterest(principal, months) Money
+        +describe() String
+    }
+    class CompoundSavingsInterestStrategy
+    class PremiumTieredInterestStrategy
+    class AmortizedLoanInterestStrategy
+    class NoInterestStrategy
+    Account <|.. BankAccount
+    BankAccount o-- InterestStrategy : strategy
+    InterestStrategy <|.. CompoundSavingsInterestStrategy
+    InterestStrategy <|.. PremiumTieredInterestStrategy
+    InterestStrategy <|.. AmortizedLoanInterestStrategy
+    InterestStrategy <|.. NoInterestStrategy
