@@ -1,0 +1,36 @@
+classDiagram
+    class Account {
+        <<interface, Component>>
+        +deposit(Money)
+        +withdraw(Money)
+        +getBalance() Money
+        +getMonthlyFee() Money
+        +describe() String
+    }
+    class BankAccount {
+        <<abstract>>
+    }
+    class SavingsAccount
+    class CheckingAccount
+    class AccountDecorator {
+        <<abstract, Decorator>>
+        #wrapped Account
+    }
+    class OverdraftProtectionDecorator {
+        -limit Money
+        -overdrawn Money
+    }
+    class PerTransactionLimitDecorator {
+        -limit Money
+    }
+    class SmsAlertsDecorator {
+        -smsGateway Consumer
+    }
+    Account <|.. BankAccount
+    BankAccount <|-- SavingsAccount
+    BankAccount <|-- CheckingAccount
+    Account <|.. AccountDecorator
+    AccountDecorator o-- Account : wraps
+    AccountDecorator <|-- OverdraftProtectionDecorator
+    AccountDecorator <|-- PerTransactionLimitDecorator
+    AccountDecorator <|-- SmsAlertsDecorator
