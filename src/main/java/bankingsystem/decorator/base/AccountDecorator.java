@@ -9,9 +9,11 @@ import bankingsystem.strategy.InterestStrategy;
 
 import java.util.Objects;
 
-/**
+/**Decorator--Component--Concrete Component--Base Decorator--Concrete Decorator
  * Base decorator: implements Account and forwards every call to the wrapped account.
  * Concrete decorators override only the behavior they change.
+ * Component Ортақ интерфейс = «сусын», Concrete Component = қара кофе,
+ * Decorator = «қоспа», Concrete Decorator = сүт, қант, сироп.
  */
 public abstract class AccountDecorator implements Account {
 
